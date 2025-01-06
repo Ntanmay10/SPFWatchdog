@@ -1,45 +1,30 @@
 import dns.resolver
-from urllib.parse import urlparse
 
-def get_domain_from_url(url):
-    """Extracts the domain from a given URL."""
-    parsed_url = urlparse(url)
-    return parsed_url.netloc
-
-def get_spf_record(domain):
-    """Fetches the SPF record for a given domain."""
+def check_spf(domain):
     try:
-        # Query DNS for TXT records
-        answers = dns.resolver.resolve(domain, 'TXT')
-        for record in answers:
-            for txt_record in record.strings:
-                if txt_record.startswith(b"v=spf1"):
-                    return txt_record.decode('utf-8')
-    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
-        return None
-    return None
+        # Change the resolver to use Google's DNS server (8.8.8.8)
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '8.8.4.4']
+        
+        # Query the DNS TXT record for the given domain
+        result = resolver.resolve(domain, 'TXT')
+        
+        for txt_record in result:
+            # Look for SPF record which usually starts with 'v=spf1'
+            record = str(txt_record).strip('"')
+            if record.startswith('v=spf1'):
+                return record
+        
+        return "No SPF record found for this domain."
 
-def main():
-    # Get domain from user input
-    website_url = input("Enter the website URL: ").strip()
-    
-    if not website_url:
-        print("No URL provided.")
-        return
-    
-    domain = get_domain_from_url(website_url)
-    if not domain:
-        print("Invalid URL provided.")
-        return
+    except dns.resolver.NoAnswer:
+        return "No DNS records found for the domain."
+    except dns.resolver.NXDOMAIN:
+        return "Domain does not exist."
+    except Exception as e:
+        return f"An error occurred: {e}"
 
-    print(f"Domain extracted: {domain}")
-
-    # Fetch SPF record
-    spf_record = get_spf_record(domain)
-    if spf_record:
-        print(f"SPF record for {domain}: {spf_record}")
-    else:
-        print(f"No SPF record found for {domain}")
-
-if __name__ == "__main__":
-    main()
+# Example usage
+domain = input("Enter the domain to check SPF record: ")
+spf_record = check_spf(domain)
+print(f"SPF Record for {domain}: {spf_record}")
