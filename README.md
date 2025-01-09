@@ -41,14 +41,7 @@ Domain extracted: example.com
 SPF record for example.com: v=spf1 include:_spf.google.com ~all
 ```
 
-## Functions
-
-- **`get_domain_from_url(url)`**: Extracts the domain from a given URL.
-- **`get_spf_record(domain)`**: Fetches the SPF record for the given domain.
-
 ## Error Handling
-
-- **No URL Provided**: If no URL is provided, the script will prompt that no URL was entered.
 - **Invalid URL**: If the URL format is incorrect or cannot be parsed, the script will indicate an invalid URL.
 - **No SPF Record Found**: If no SPF record is found for the domain, the script will notify the user.
 
