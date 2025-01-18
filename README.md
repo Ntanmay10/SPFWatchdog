@@ -6,13 +6,14 @@ This Python script checks the SPF (Sender Policy Framework) record for a given w
 
 - Extracts the domain from a given URL.
 - Fetches and displays the SPF record associated with the domain.
+- Generates pdf for the spf record.
 
 ## Prerequisites
 
-To run this script, you need Python installed along with the `dnspython` library. You can install the necessary library using pip:
+To run this script, you need Python installed along with the `dnspython` and `fpdf` library. You can install the necessary library using pip:
 
 ```
-pip install dnspython
+pip install dnspython fpdf
 ```
 
 ## Usage

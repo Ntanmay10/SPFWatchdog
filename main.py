@@ -1,4 +1,9 @@
 import dns.resolver
+from fpdf import FPDF
+
+pdf = FPDF()
+pdf.add_page()
+pdf.set_font('Arial', 'B', 8)
 
 def check_spf(domain):
     try:
@@ -24,3 +29,5 @@ def check_spf(domain):
 domain = input("Enter the domain to check SPF record: ")
 spf_record = check_spf(domain)
 print(f"SPF Record for {domain}: {spf_record}")
+pdf.cell(40, 10, spf_record)
+pdf.output(f"spfrecord_{domain}.pdf", 'F')
